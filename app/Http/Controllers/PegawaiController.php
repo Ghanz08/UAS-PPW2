@@ -11,11 +11,31 @@ class PegawaiController extends Controller
 {
     public function index(Request $request) {
         $keyword = $request->get('keyword');
-        $data = Pegawai::with('pekerjaan')->when($keyword, function ($query) use ($keyword) {
-            $query->where('nama', 'like', "%{$keyword}%")
-                  ->orWhere('email', 'like', "%{$keyword}%");
-        })->paginate(10);
-        return view('pegawai.index', compact('data'));
+        $sort = $request->get('sort', 'desc');
+        $gender = $request->get('gender');
+        $pekerjaan_id = $request->get('pekerjaan_id');
+        $is_active = $request->get('is_active');
+        
+        $data = Pegawai::with('pekerjaan')
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->where('nama', 'like', "%{$keyword}%")
+                      ->orWhere('email', 'like', "%{$keyword}%");
+            })
+            ->when($gender, function ($query) use ($gender) {
+                $query->where('gender', $gender);
+            })
+            ->when($pekerjaan_id, function ($query) use ($pekerjaan_id) {
+                $query->where('pekerjaan_id', $pekerjaan_id);
+            })
+            ->when($is_active !== null && $is_active !== '', function ($query) use ($is_active) {
+                $query->where('is_active', $is_active);
+            })
+            ->orderBy('created_at', $sort)
+            ->paginate(10)
+            ->appends($request->all());
+            
+        $pekerjaan = Pekerjaan::all();
+        return view('pegawai.index', compact('data', 'pekerjaan'));
     }
 
     public function add() {
