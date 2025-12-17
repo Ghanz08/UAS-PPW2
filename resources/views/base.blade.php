@@ -22,7 +22,7 @@
     <meta name="title" content="{{ config('app.name') }}">
     <meta name="description" content="Aplikasi ini merupakan proyek dasar Praktikum Pemrograman Web 2 di Universitas Gadjah Mada yang dirancang untuk mendukung proses pembelajaran mahasiswa dalam pengembangan aplikasi web.">
     <meta name="keywords" content="Praktikum Pemrograman Web 2, Universitas Gadjah Mada, proyek praktikum, aplikasi web, sistem informasi akademik, pembelajaran pemrograman, Laravel, pengembangan web, proyek mahasiswa"/>
-    <meta name="author" content="Abidurrahman Al-Faruq"/>
+    <meta name="author" content="Ghani Zulhusni bahri"/>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">

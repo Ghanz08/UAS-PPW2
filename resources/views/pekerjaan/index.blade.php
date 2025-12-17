@@ -19,13 +19,32 @@
                 <a href="{{ route('pekerjaan.add') }}" class="rounded-md bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
                     Tambah Data
                 </a>
-                <form class="flex w-full max-w-sm gap-2" autocomplete="off">
-                    <input type="text" name="keyword" value="{{ request('keyword') }}" placeholder="Masukkan kata kunci..." class="w-full rounded-md border px-3 py-2 text-sm">
-                    <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 cursor-pointer">
-                        Cari
-                    </button>
+                <form class="w-full max-w-sm" autocomplete="off" id="search-form-pekerjaan">
+                    <input 
+                        type="text" 
+                        name="keyword" 
+                        value="{{ request('keyword') }}" 
+                        placeholder="Cari nama atau deskripsi..." 
+                        class="w-full rounded-md border px-3 py-2 text-sm" 
+                        id="search-input-pekerjaan"
+                    >
                 </form>
             </div>
+            
+            <script>
+                (function() {
+                    let timeout = null;
+                    const form = document.getElementById('search-form-pekerjaan');
+                    const input = document.getElementById('search-input-pekerjaan');
+                    
+                    input.addEventListener('input', function() {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(function() {
+                            form.submit();
+                        }, 500);
+                    });
+                })();
+            </script>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="min-w-full divide-y divide-x divide-gray-200 text-sm">
                     <thead class="bg-gray-100">

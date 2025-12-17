@@ -19,11 +19,82 @@
                 <a href="{{ route('pegawai.add') }}" class="rounded-md bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700">
                     Tambah Data
                 </a>
-                <form class="flex w-full max-w-sm gap-2" autocomplete="off">
-                    <input type="text" name="keyword" value="{{ request('keyword') }}" placeholder="Masukkan kata kunci..." class="w-full rounded-md border px-3 py-2 text-sm">
-                    <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 cursor-pointer">
-                        Cari
-                    </button>
+                <form class="w-full max-w-sm" autocomplete="off" id="search-form-pegawai">
+                    <input 
+                        type="text" 
+                        name="keyword" 
+                        value="{{ request('keyword') }}" 
+                        placeholder="Cari nama atau email..." 
+                        class="w-full rounded-md border px-3 py-2 text-sm" 
+                        id="search-input-pegawai"
+                    >
+                </form>
+            </div>
+            
+            <script>
+                (function() {
+                    let timeout = null;
+                    const form = document.getElementById('search-form-pegawai');
+                    const input = document.getElementById('search-input-pegawai');
+                    
+                    input.addEventListener('input', function() {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(function() {
+                            form.submit();
+                        }, 500);
+                    });
+                })();
+            </script>
+            
+            <!-- Filter Section -->
+            <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <form class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" autocomplete="off">
+                    <input type="hidden" name="keyword" value="{{ request('keyword') }}">
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Urutan</label>
+                        <select name="sort" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+                            <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Terbaru</option>
+                            <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Terlama</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Gender</label>
+                        <select name="gender" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+                            <option value="">Semua</option>
+                            <option value="male" {{ request('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                            <option value="female" {{ request('gender') == 'female' ? 'selected' : '' }}>Female</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Pekerjaan</label>
+                        <select name="pekerjaan_id" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+                            <option value="">Semua</option>
+                            @foreach($pekerjaan as $p)
+                                <option value="{{ $p->id }}" {{ request('pekerjaan_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Status</label>
+                        <select name="is_active" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+                            <option value="">Semua</option>
+                            <option value="1" {{ request('is_active') == '1' ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ request('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-end gap-2">
+                        <button type="submit" class="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 cursor-pointer">
+                            Filter
+                        </button>
+                        <a href="{{ route('pegawai.index') }}" class="rounded-md bg-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-400 cursor-pointer">
+                            Reset
+                        </a>
+                    </div>
                 </form>
             </div>
             <div class="overflow-x-auto rounded-lg border border-gray-200">
