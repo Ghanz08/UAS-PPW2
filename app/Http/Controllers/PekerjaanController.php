@@ -13,7 +13,7 @@ class PekerjaanController extends Controller
         $keyword = $request->get('keyword');
         $data = Pekerjaan::when($keyword, function ($query) use ($keyword) {
             $query->where('nama', 'like', "%{$keyword}%")->orWhere('deskripsi', 'like', "%{$keyword}%");
-        })->get();
+        })->paginate(10);
         return view('pekerjaan.index', compact('data'));
     }
 
@@ -25,9 +25,15 @@ class PekerjaanController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'deskripsi' => 'required|string',
+            'captcha' => 'required',
         ]);
 
-        if ($validator->fails()) return redirect()->back()->with($validator->errors()->all());
+        if ($validator->fails()) return redirect()->back()->withErrors($validator)->withInput();
+        
+        // Validasi captcha manual
+        if ($request->session()->get('captcha') !== $request->captcha) {
+            return redirect()->back()->withErrors(['captcha' => 'Kode captcha tidak valid.'])->withInput();
+        }
 
         $data = new Pekerjaan();
         $data->nama = $request->nama;
@@ -36,7 +42,7 @@ class PekerjaanController extends Controller
         if ($data->save()) {
             return redirect()->route('pekerjaan.index')->with('success', 'Data berhasil ditambahkan');
         } else {
-            return redirect()->route('pekerjaan.index')->with('success', 'Data tidak tersimpan');
+            return redirect()->route('pekerjaan.index')->with('error', 'Data tidak tersimpan');
         }
     }
 
